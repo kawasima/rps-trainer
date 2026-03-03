@@ -23,9 +23,7 @@
 
 「手が読まれるタイミング」では、「けん」の発声開始から何ms後に手の形が判別できるようになるかを手の種類別に表示します。値が小さいほど早バレしやすい手です。
 
-<img src="./public/images/analysis3.png" width="260" alt="レポート1">
-<img src="./public/images/analysis2.png" width="260" alt="レポート2">
-<img src="./public/images/analysis1.png" width="260" alt="レポート3">
+<img src="./public/images/analysis3.png" width="260" alt="レポート1"><img src="./public/images/analysis2.png" width="260" alt="レポート2"><img src="./public/images/analysis1.png" width="260" alt="レポート3">
 
 
 ### MLモデルの学習
