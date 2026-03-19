@@ -104,6 +104,21 @@ export async function saveBattleRecord(record: BattleRecord): Promise<void> {
   });
 }
 
+export async function getAllBattleRecords(): Promise<BattleRecord[]> {
+  const db = await openDB();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(BATTLE_STORE, 'readonly');
+    const store = tx.objectStore(BATTLE_STORE);
+    const request = store.getAll();
+    request.onsuccess = (event) => {
+      const records = (event.target as IDBRequest<BattleRecord[]>).result;
+      records.sort((a, b) => a.timestamp - b.timestamp);
+      resolve(records);
+    };
+    request.onerror = (event) => reject((event.target as IDBRequest).error);
+  });
+}
+
 export async function getBattleRecordsBySession(sessionId: string): Promise<BattleRecord[]> {
   const db = await openDB();
   return new Promise((resolve, reject) => {

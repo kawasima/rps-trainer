@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { initCamera } from './camera';
 import { classifyFingerStates, classifyGesture } from './gesture';
 import { createStabilizer } from './gesture';
-import { openDB, clearAllRecords, getAllRecords, type GestureRecord, type BattleRecord } from './db';
+import { openDB, clearAllRecords, getAllRecords, getAllBattleRecords, type GestureRecord, type BattleRecord } from './db';
 import { predict, loadModel, isModelReady } from './classifier';
 import BiasAnalysis from './analysis/BiasAnalysis';
 import TransitionAnalysis from './analysis/TransitionAnalysis';
@@ -131,8 +131,21 @@ export default function App() {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleAnalyze = useCallback(async () => {
-    const data = await getAllRecords();
-    setRecords(data);
+    const [data, battles] = await Promise.all([getAllRecords(), getAllBattleRecords()]);
+    if (data.length === 0 && battles.length > 0) {
+      const converted: GestureRecord[] = battles.map(r => ({
+        sessionId: r.sessionId,
+        timestamp: r.timestamp,
+        hand: r.userHand,
+        landmarks: [],
+        stabilizationTimeMs: r.reactionTimeMs,
+        fingerStates: [],
+      }));
+      setRecords(converted);
+    } else {
+      setRecords(data);
+    }
+    setBattleRecords(battles);
     setView('dashboard');
   }, []);
 
